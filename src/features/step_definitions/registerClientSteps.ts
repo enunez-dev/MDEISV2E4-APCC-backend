@@ -2,9 +2,7 @@ import { Given, When, Then } from '@cucumber/cucumber';
 import { expect } from 'chai';
 import { registerClientService } from '../../services/clientService';
 
-// Reemplaza el servicio original por una implementación mockada
 let mockRegisterClientService: typeof registerClientService;
-
 let clientData: any;
 let result: any;
 let error: any;
@@ -14,8 +12,6 @@ Given('que el formulario de registro de cliente está disponible', function () {
   clientData = null;
   result = null;
   error = null;
-
-  // Aquí mockeamos manualmente el servicio para devolver una respuesta simulada
   mockRegisterClientService = async (data) => {
     if (data.email === 'email-invalido') {
       throw new Error('El formato del email es inválido');
@@ -31,21 +27,21 @@ Given('que el formulario de registro de cliente está disponible', function () {
 // Step para ingresar datos válidos de cliente
 When('ingreso los siguientes datos válidos:', function (dataTable) {
   const data = dataTable.hashes();
-  clientData = data[0]; // Accede al primer objeto de la tabla
+  clientData = data[0];
 });
 
 // Step para ingresar datos de cliente con email inválido
 When('ingreso los siguientes datos con email invalido:', function (dataTable) {
   const data = dataTable.hashes();
-  clientData = data[0]; // Accede al primer objeto de la tabla (con email inválido)
+  clientData = data[0];
 });
 
 // Step para intentar registrar al cliente
 When('hago clic en "Registrar"', async function () {
   try {
-    result = await mockRegisterClientService(clientData); // Intenta registrar al cliente
+    result = await mockRegisterClientService(clientData);
   } catch (err) {
-    error = err; // Captura el error si la validación falla
+    error = err;
   }
 });
 
@@ -65,5 +61,5 @@ Then('recibo un mensaje de confirmación: {string}', function (expectedMessage) 
 
 // Verifica que se lance un mensaje de error cuando el email es inválido
 Then('recibo un mensaje de error: {string}', function (expectedErrorMessage) {
-  expect(error.message).to.equal(expectedErrorMessage); // Verifica el mensaje de error
+  expect(error.message).to.equal(expectedErrorMessage);
 });
